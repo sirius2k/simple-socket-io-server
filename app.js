@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var users = [];
 var userIndex = 0;
 
 app.get('/', function(req, res) {
@@ -8,19 +9,40 @@ app.get('/', function(req, res) {
 });
 
 io.on('connection', function(socket) {
-    console.log('a user connected!');
+    var username = 'user' + userIndex;
+    users[username] = username;
+    userIndex++;
+
+    console.log(username + ' connected!');
 
     socket.on('message', echoMessage);
+
+    socket.on('getPost', getPost);
 
     socket.on('disconnect', function() {
         console.log('user disconnected');
     });
+
+    io.emit('connected', username);
 });
 
 function echoMessage(msg) {
     console.log('message : ' + msg);
 
     io.emit('message', msg);
+}
+
+function getPost(request) {
+    console.log('getPost called. request = ' + JSON.stringify(request));
+
+    var post = {
+        id : request.id,
+        title : 'title',
+        body : 'test body',
+        userId : 1
+    };
+
+    io.emit('getPost', post);
 }
 
 http.listen(3000, function() {

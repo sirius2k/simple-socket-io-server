@@ -32,11 +32,11 @@ function echoMessage(msg) {
     io.emit('message', msg);
 }
 
-function getPost(request) {
-    console.log('getPost called. request = ' + JSON.stringify(request));
+function getPost(content) {
+    console.log('getPost called. request = ' + JSON.stringify(content));
 
     var post = {
-        id : request.id,
+        id : content.id,
         title : 'title',
         body : 'test body',
         userId : 1
